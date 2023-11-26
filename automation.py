@@ -20,7 +20,7 @@ def get_data():
     elif fn_no == 1:
         print("Please make sure to close the excel file not to get any errors\n")
         my_data['fn_no'] = int(fn_no)
-        my_data['excel_path'] = input("""Please input the excel file path, just the .xlsx file name if the file in the same dir as this scripts, else input the abs path\n""")
+        my_data['excel_path'] = input("""Please input the excel file path with its extension\njust the .xlsx file name if the file in the same dir as this script\nelse input the abs path\n""")
         # my_data['sheet_name'] = input("Please input the sheet number\n")
         my_data['first_index'] = input("Please input the index of the first port ex: L5\n")
         return my_data
@@ -48,9 +48,9 @@ def read(data:dict):
         else:
             ports[data['first_index'][0] + str(i)] = re.sub('[^a-zA-Z0-9]',' ', str_data).split()
     # print(ports)
-    processing(ports,sheet,wb_list)
+    processing(ports,sheet,wb_list,data['excel_path'])
 
-def processing(ports,sheet,wb):
+def processing(ports,sheet,wb,file):
     '''
     handles max z columns in the excel file
     '''
@@ -64,21 +64,21 @@ def processing(ports,sheet,wb):
                     unsec_flag = 1
                 sheet[chr( ord(i[0]) + 1 ) + i[1:]] = "unsecure" 
                 sheet[chr( ord(i[0]) + 1 ) + i[1:]].font = Font(color="FF0000")
-                wb.save('test.xlsx')
+                wb.save(file)
             elif j.lower() == "any":
                 if unsec_flag == 0:
                     sheet.insert_cols(idx = ord(i[0]) - 95)
                     unsec_flag = 1
                 sheet[chr( ord(i[0]) + 1 ) + i[1:]] = "check any!" 
                 sheet[chr( ord(i[0]) + 1 ) + i[1:]].font = Font(color="FFFF00")
-                wb.save('test.xlsx')
+                wb.save(file)
     if unsec_flag == 0:
-        print("There is not unsecure ports in your file, go ahead!\n")
+        print("There isn't any unsecure ports in your file, go ahead!\n")
     else:
         print("Ops, I found some unsecure stuff, go check them\n")
         
 def direct_chk(port):
-    chk = get_unsec()
+    chk = get_unsec
     if port in chk:
         print("unsecure, block it")
     else:
