@@ -25,7 +25,8 @@ def get_data():
         my_data['first_index'] = input("Please input the index of the first port ex: L5\n")
         return my_data
     elif fn_no == 2:
-        pass 
+        my_data['fn_no'] = int(fn_no)
+        return my_data
 
 def unsecure_ports_check(data:dict):
     read(data)
@@ -77,7 +78,7 @@ def processing(ports,sheet,wb):
         print("Ops, I found some unsecure stuff, go check them\n")
         
 def direct_chk(port):
-    chk = get_unsec
+    chk = get_unsec()
     if port in chk:
         print("unsecure, block it")
     else:

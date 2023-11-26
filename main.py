@@ -8,6 +8,7 @@ while(True):
         unsecure_ports_check(excel_data)
         print("==================================================")
     elif excel_data['fn_no'] == 2:
-        direct_chk(input("input the port number"))
+        port = input("input the port number\n")
+        direct_chk(port)
         print("==================================================")
 
