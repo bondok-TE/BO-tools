@@ -78,7 +78,7 @@ def processing(ports,sheet,wb,file):
         print("Ops, I found some unsecure stuff, go check them\n")
         
 def direct_chk(port):
-    chk = get_unsec
+    chk = get_unsec()
     if port in chk:
         print("unsecure, block it")
     else:
