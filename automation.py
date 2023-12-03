@@ -57,20 +57,29 @@ def processing(ports,sheet,wb,file):
     chk = get_unsec()
     unsec_flag = 0
     for i,k in ports.items():
+        indx = chr( ord(i[0]) + 1 ) + i[1:]
         for j in k:
             if j in chk:
                 if unsec_flag == 0:
                     sheet.insert_cols(idx = ord(i[0]) - 95)
                     unsec_flag = 1
-                sheet[chr( ord(i[0]) + 1 ) + i[1:]] = "unsecure" 
-                sheet[chr( ord(i[0]) + 1 ) + i[1:]].font = Font(color="FF0000")
+                if sheet[indx].value is None:
+                    sheet[indx] =  j +"-->unsecure" 
+                    sheet[indx].font = Font(color="FF0000")
+                else:
+                    sheet[indx] = sheet[indx].value+","+ j +"-->unsecure" 
+                    sheet[indx].font = Font(color="FF0000")
                 wb.save(file)
             elif j.lower() == "any":
                 if unsec_flag == 0:
                     sheet.insert_cols(idx = ord(i[0]) - 95)
                     unsec_flag = 1
-                sheet[chr( ord(i[0]) + 1 ) + i[1:]] = "check any!" 
-                sheet[chr( ord(i[0]) + 1 ) + i[1:]].font = Font(color="FFFF00")
+                if sheet[indx].value is None:
+                    sheet[indx] = "check_any" 
+                    sheet[indx].font = Font(color="0000FF")
+                else:
+                    sheet[indx] = sheet[indx].value+","+ j +"check_any" 
+                    sheet[indx].font = Font(color="0000FF")
                 wb.save(file)
     if unsec_flag == 0:
         print("There isn't any unsecure ports in your file, go ahead!\n")
