@@ -6,91 +6,74 @@ def get_unsec():
     chk = ['20','21','23','25','80','8080','135','139','445','1433','3306','3389','110','143','161','389','5060','5900' ]
     return set(chk)
 
-def get_data():
-
-    my_data = dict()
-    fn_no = int(input('''Pleased input the function number
-0 --> exit the program
-1 --> xlsx unsecure ports check
-2 --> shell unsecure ports check\n'''))
-
-    if fn_no == 0:
-        my_data["fn_no"] = 0
-        return my_data
-    elif fn_no == 1:
-        print("Please make sure to close the excel file not to get any errors\n")
-        my_data['fn_no'] = int(fn_no)
-        my_data['excel_path'] = input("""Please input the excel file path with its extension\njust the .xlsx file name if the file in the same dir as this script\nelse input the abs path\n""")
-        # my_data['sheet_name'] = input("Please input the sheet number\n")
-        my_data['first_index'] = input("Please input the index of the first port ex: L5\n")
-        return my_data
-    elif fn_no == 2:
-        my_data['fn_no'] = int(fn_no)
-        return my_data
-
-def unsecure_ports_check(data:dict):
-    read(data)
+def excel_auto(my_data):
+    return read(my_data)
 
 def read(data:dict):
     wb_list = load_workbook(data['excel_path'])
     # sheet = wb_list[data['sheet_name']] 
     sheet = wb_list.active
     ports = {}
-    for i in range(int(data['first_index'][1:]),len(sheet[data['first_index'][0]])+1): 
-        '''
-        A15
-        first part of the range 15
-        second part of the range len of this column
-        '''
-        str_data = str(sheet[data['first_index'][0] + str(i)].value)
+    first_row = int(data['first_index'][1:])
+    col_symbol = sheet[data['first_index'][0]]
+    for i in range(first_row,len(col_symbol) + 1): 
+        cell_index = data['first_index'][0] + str(i)
+        str_data = str(sheet[cell_index].value)
         if str_data == 'None':
             continue
         else:
-            ports[data['first_index'][0] + str(i)] = re.sub('[^a-zA-Z0-9]',' ', str_data).split()
-    # print(ports)
-    processing(ports,sheet,wb_list,data['excel_path'])
+            # will be changed to handle named protocols
+            ports[cell_index] = re.sub('[^a-zA-Z0-9]',' ', str_data).split()
+
+    return processing(ports,sheet,wb_list,data['excel_path'])
 
 def processing(ports,sheet,wb,file):
     '''
-    handles max z columns in the excel file
+    handles a to z columns in the excel file
+    strings are included in port{} but not in get_unsec so neglected
     '''
     chk = get_unsec()
     unsec_flag = 0
     for i,k in ports.items():
-        indx = chr( ord(i[0]) + 1 ) + i[1:]
+        inserted_index = chr( ord(i[0]) + 1 ) + i[1:]
         for j in k:
             if j in chk:
+                new_port = j
                 if unsec_flag == 0:
                     sheet.insert_cols(idx = ord(i[0]) - 95)
                     unsec_flag = 1
-                if sheet[indx].value is None:
-                    sheet[indx] =  j +"-->unsecure" 
-                    sheet[indx].font = Font(color="FF0000")
+                if sheet[inserted_index].value is None:
+                    sheet[inserted_index] =  new_port +"-->unsecure" 
+                    sheet[inserted_index].font = Font(color="FF0000")
                 else:
-                    sheet[indx] = sheet[indx].value+","+ j +"-->unsecure" 
-                    sheet[indx].font = Font(color="FF0000")
+                    old_value = sheet[inserted_index].value
+                    sheet[inserted_index] = old_value + "," + new_port + "-->unsecure" 
+                    sheet[inserted_index].font = Font(color="FF0000")
                 wb.save(file)
             elif j.lower() == "any":
                 if unsec_flag == 0:
                     sheet.insert_cols(idx = ord(i[0]) - 95)
                     unsec_flag = 1
-                if sheet[indx].value is None:
-                    sheet[indx] = "check_any" 
-                    sheet[indx].font = Font(color="0000FF")
+                if sheet[inserted_index].value is None:
+                    sheet[inserted_index] = "check_any" 
+                    sheet[inserted_index].font = Font(color="FF0000")
                 else:
-                    sheet[indx] = sheet[indx].value+","+ j +"check_any" 
-                    sheet[indx].font = Font(color="0000FF")
+                    old_value = sheet[inserted_index].value
+                    sheet[inserted_index] = old_value +","+ j +"check_any" 
+                    sheet[inserted_index].font = Font(color="FF0000")
                 wb.save(file)
     if unsec_flag == 0:
-        print("There isn't any unsecure ports in your file, go ahead!\n")
+        return 0
     else:
-        print("Ops, I found some unsecure stuff, go check them\n")
+        return 1
         
 def direct_chk(port):
+    # will be changed to handle named protocols
     chk = get_unsec()
     if port in chk:
         print("unsecure, block it")
     else:
         print("secure, go ahead")
 
-
+def create_policy():
+    pass
