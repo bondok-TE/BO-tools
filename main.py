@@ -1,13 +1,15 @@
 from automation import *
 from new_policy import *
+from ntp_integration import *
 
-print('================ Welcome to BO_tools ================\n')
+print('================ Welcome to BO_tools ================3')
 while(True):
     fn_no = int(input('''Pleased input the function number
 0 --> exit the program
 1 --> xlsx unsecure ports check
 2 --> shell unsecure ports check
-3 --> create new policy\n'''))
+3 --> create new policy
+4 --> srx ntp integration\n'''))
     
     if fn_no == 0:
         break
@@ -32,23 +34,29 @@ while(True):
         print("===============Welcome to Juniper policy wizard===============")
         print("1-start with the source ip(s) or subnet(s)")
         src_ip_ls = input("input the src ip(s) or src subnet(s)\n").split()
-        src_and_zone = obj_ip(src_ip_ls,"source")
+        src_zone_adset = obj_ip(src_ip_ls,"source")
         print("2-Then we do the same for the destination ip(s) or subnet(s)")
         dst_ip_ls = input("input the dst ip(s) or dst subnet(s)\n").split()
-        dst_and_zone = obj_ip(dst_ip_ls,"destination")
+        dst_zone_adset = obj_ip(dst_ip_ls,"destination")
         print("3-Now the ports trun")
         src_ports_chk = input("are source ports specified? yes-->1 no-->0\n")
         if int(src_ports_chk):
             src_ports_ls = input("input the src port(s)\n").split()
             src_app_group = port_obj( src_ports_ls,"source")
         else:
-            src_app_groups = ["any"]
-        dst_ports_chk = input("are source ports specified? yes-->1 no-->0\n")
+            src_app_group = ["any"]
+        dst_ports_chk = input("are destination ports specified? yes-->1 no-->0\n")
         if int(dst_ports_chk):
             dst_ports_ls = input("input the dst port(s)\n").split()
             dst_app_group = port_obj( dst_ports_ls,"destination")
         else:
             dst_app_group = ["any"]
-        print("Finally we create the policy")
-        create_policy(src_and_zone,dst_and_zone,src_app_group,dst_app_group)
+        print("4-Finally we create the policy")
+        create_policy(src_zone_adset, dst_zone_adset, src_app_group, dst_app_group)
+    elif fn_no == 4:
+        srx_ips = input("input ips of srx devices").split()
+        response = srx_interaction(srx_ips)
+        data_frame = manipulate_response(response)
+        write_to_excel(data_frame)
+        
 
