@@ -54,6 +54,21 @@ while(True):
         print("4-Finally we create the policy")
         create_policy(src_zone_adset, dst_zone_adset, src_app_group, dst_app_group)
     elif fn_no == 4:
+        file_path = input('in the advanced mode you give me a file path with policy params, i give you the policy cmds, fair enough huh?\n') 
+        try:
+            with open(file_path, 'r') as file:
+                file_content = file.read()
+                try:
+                    policy_params = json.loads(file_content)
+                    print(policy_params)
+                    create_policy(policy_params["src_zone_adset"], policy_params["dst_zone_adset"], policy_params["src_app_group"], policy_params["dst_app_group"])
+                except json.JSONDecodeError as e:
+                    print(f"Error decoding JSON: {e}")
+        except FileNotFoundError:
+            print(f"File '{file_path}' not found.")
+        except IOError:
+            print(f"Error reading file '{file_path}'.")
+    elif fn_no == 5:
         srx_ips = input("input ips of srx devices").split()
         response = srx_interaction(srx_ips)
         data_frame = manipulate_response(response)
