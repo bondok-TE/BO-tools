@@ -1,5 +1,4 @@
 # BO-tools
-hello
 policy_params file format that is used in create policy advanced mode:
 {
     "src_zone_adset" : {"zone1":"adset1", "zone2":"adset2"},
