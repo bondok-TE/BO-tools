@@ -4,12 +4,14 @@ from ntp_integration import *
 
 print('================ Welcome to BO_tools ================3')
 while(True):
-    fn_no = int(input('''Pleased input the function number
-0 --> exit the program
-1 --> xlsx unsecure ports check
-2 --> shell unsecure ports check
-3 --> create new policy
-4 --> srx ntp integration\n'''))
+    print('Pleased input the function number:')
+    print("0 --> exit the program")
+    print("1 --> xlsx unsecure ports check")
+    print("2 --> shell unsecure ports check")
+    print("3 --> create srx new policy beginner mode")
+    print("4 --> create srx new policy advanced mode")
+    print("5 --> srx ntp integration")
+    fn_no = int(input())
     
     if fn_no == 0:
         break
@@ -60,7 +62,7 @@ while(True):
                 file_content = file.read()
                 try:
                     policy_params = json.loads(file_content)
-                    print(policy_params)
+                    # print(policy_params)
                     create_policy(policy_params["src_zone_adset"], policy_params["dst_zone_adset"], policy_params["src_app_group"], policy_params["dst_app_group"])
                 except json.JSONDecodeError as e:
                     print(f"Error decoding JSON: {e}")

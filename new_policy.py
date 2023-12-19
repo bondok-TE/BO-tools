@@ -32,7 +32,7 @@ def address_set(ip_obj_dct,zone_st):
 		print(f"#set security zones security-zone {val['zone']} address-book address-set {zone_addr_set[val['zone']]} address {val['ip']}")
 	return zone_addr_set
 	
-# any object case not handled
+# any object case not handled --> not printing the line including that port
 # range ports not handled
 # check port created cmd
 def port_obj(port_ls,direction):
@@ -78,3 +78,4 @@ def create_policy(src_zone_adset, dst_zone_adset,src_app_group,dst_app_group):
 				print(f"set security policies from-zone {s_zone} to-zone {d_zone} policy {policy_name} match application {dst_app_group}")
 			print(f"set security policies from-zone {s_zone} to-zone {d_zone} policy {policy_name} then permit")
 		
+
