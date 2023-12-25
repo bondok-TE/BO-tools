@@ -71,9 +71,13 @@ while(True):
         except IOError:
             print(f"Error reading file '{file_path}'.")
     elif fn_no == 5:
-        srx_ips = input("input ips of srx devices").split()
-        response = srx_interaction(srx_ips)
-        data_frame = manipulate_response(response)
-        write_to_excel(data_frame)
+        srx_ips = input("input ips of srx devices\n").split()
+        wb_sheet = create_excel()
+        for i in srx_ips:
+            response = srx_interaction(i)
+            ntp_association_dct = dct_ntp_association(response)
+            data_frame = manipulate_response(ntp_association_dct)
+            write_to_excel(wb_sheet,data_frame)
+        print("integration report is created check ./ntp_integrations.xlsx")
         
 
