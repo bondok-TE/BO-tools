@@ -74,11 +74,11 @@ while(True):
         srx_ips = input("input ips of srx devices\n").split()
         wb_sheet = create_excel()
         for ip in srx_ips:
-            response = srx_interaction(ip)
+            response,hostname = srx_interaction(ip)
             if response == "":
                 break
             ntp_association_dct = dct_ntp_association(response)
-            data_frame = manipulate_response(ntp_association_dct,ip)
+            data_frame = manipulate_response(ntp_association_dct,ip,hostname)
             write_to_excel(wb_sheet,data_frame)
         if response != "":
             print("integration report is created check ./ntp_integrations.xlsx")
