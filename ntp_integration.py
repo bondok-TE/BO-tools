@@ -13,26 +13,29 @@ with open(pass_path,'r') as file:
     password = file.read()
 
 def srx_interaction(device):
-    response = ""
-    hostname = device
-    # password = getpass.getpass(prompt=f"Enter password for {username}@{hostname}: ")
-    # Connect to the device
-    with Device(host=hostname, user=username, password=password,port=22) as dev:
-        # Check if the connection is successfully established
-        if dev.connected:
-            print(f"Connected to {hostname}")
-            
-            # Send a command and retrieve the response
-            command = 'show ntp association'
-            response = dev.cli(command, format='json')
-            print(f"==============\n {response}")
-            # response = dev.rpc.get_ntp_status_information(ignore_warning = True)
-            # print(f"==============\n {response}")
-            
-            # Print the response
-            # print("==============\n" + response)
-        else:
-            print(f"Failed to connect to {hostname}")
+    try:
+        response = ""
+        hostip = device
+        # password = getpass.getpass(prompt=f"Enter password for {username}@{hostname}: ")
+        # Connect to the device
+        with Device(host=hostip, user=username, password=password,port=22) as dev:
+            # Check if the connection is successfully established
+            if dev.connected:
+                print(f"Connected to {hostip}")
+                
+                # Send a command and retrieve the response
+                command = 'show ntp association'
+                response = dev.cli(command,format='json',warning=False)
+                # print(f"==============\n {response}")
+                # response = dev.rpc.get_ntp_status_information(ignore_warning = True)
+                # print(f"==============\n {response}")
+                
+                # Print the response
+                # print("==============\n" + response)
+            else:
+                print(f"Failed to connect to {hostip}")
+    except ConnectTimeoutError:
+        print(f"connection time out to ip {hostip}")
     return response
 
 def dct_ntp_association(ntp_association):
@@ -40,14 +43,12 @@ def dct_ntp_association(ntp_association):
     ntp_association_val.pop(1)
     ntp_association_val = list(map(str.split,ntp_association_val))
     response = {"data":[]}
-    ntp_association_val_dct_1 = {}
-    ntp_association_val_dct_2 = {}
-    for ind,val in enumerate(ntp_association_val[0]):
-        ntp_association_val_dct_1[val] = (ntp_association_val[1][ind])
-        ntp_association_val_dct_2[val] = (ntp_association_val[2][ind])
-    
-    response['data'].append(ntp_association_val_dct_1)
-    response['data'].append(ntp_association_val_dct_2)
+    for i in range(1,len(ntp_association_val)):
+        ntp_association_val_dct_temp = {}
+        for ind,val in enumerate(ntp_association_val[0]):
+            ntp_association_val_dct_temp[val] = (ntp_association_val[i][ind])
+        response['data'].append(ntp_association_val_dct_temp)
+        
 
     # pp.pprint(ntp_association_val_dct_1)
     # print("===========")
@@ -58,7 +59,7 @@ def dct_ntp_association(ntp_association):
 
     return response
 
-def manipulate_response(response):
+def manipulate_response(response,ip):
     # keys to include from the 
     
     # keys_to_include = [
@@ -84,8 +85,10 @@ def manipulate_response(response):
     ]
 
     # add data to the response suitable for viewing in excel
+    # pp.pprint(response)
     response['data'][0]["hostname"] = "hostname"
-    response['data'][0]["device-ip"] = "ip"
+    response['data'][0]["device-ip"] = ip
+    # pp.pprint(response)
     df = pd.json_normalize(response,record_path=['data'],errors="ignore")
 
     # Reorder columns based on desired_order list
