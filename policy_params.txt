@@ -1,6 +1,6 @@
 {
-    "src_zone_adset" : {"zone1":"adset1", "zone2":"adset2"},
-    "dst_zone_adset" : {"zone3":"adset3", "zone4":"adset4"},
-    "src_app_group"  : "src_app_group",
-    "dst_app_group"  : "dst_app_group"
+    "src_zone_adset" : {"untrust_1":"set_1", "untrust_2":"set_2"},
+    "dst_zone_adset" : {"trust_1":"set_3", "trust_2":"set_4"},
+    "src_app_group"  : "any",
+    "dst_app_group"  : "RTP_Range"
 }

@@ -71,7 +71,9 @@ while(True):
         except IOError:
             print(f"Error reading file '{file_path}'.")
     elif fn_no == 5:
-        srx_ips = input("input ips of srx devices\n").split()
+        devices = "devices.txt"
+        with open(devices,'r')as file:
+            srx_ips = file.read().split("\n")
         wb_sheet = create_excel()
         for ip in srx_ips:
             response,hostname = srx_interaction(ip)
