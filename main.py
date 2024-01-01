@@ -1,7 +1,7 @@
 from automation import *
 from new_policy import *
 from ntp_integration import *
-
+from srx_interactions import *
 print('================ Welcome to BO_tools ================3')
 while(True):
     print('Pleased input the function number:')
@@ -11,6 +11,8 @@ while(True):
     print("3 --> create srx new policy beginner mode")
     print("4 --> create srx new policy advanced mode")
     print("5 --> srx ntp integration")
+    print("6 --> srx pull OS")
+
     fn_no = int(input())
     
     if fn_no == 0:
@@ -76,7 +78,7 @@ while(True):
             srx_ips = file.read().split("\n")
         wb_sheet = create_excel()
         for ip in srx_ips:
-            response,hostname = srx_interaction(ip)
+            response,hostname = srx_interaction(ip,fn_no)
             if response == "":
                 break
             ntp_association_dct = dct_ntp_association(response)
@@ -84,5 +86,7 @@ while(True):
             write_to_excel(wb_sheet,data_frame)
         if response != "":
             print("integration report is created check ./ntp_integrations.xlsx")
+    elif fn_no == 6:
+        pass
         
 
