@@ -9,7 +9,7 @@ def get_unsec() -> set:
     chk = ['20','21','23','25','80','8080','135','139','445','1433','3306','3389','110','143','161','389','5060','5900' ]
     return set(chk)
 
-def read(data:dict):
+def read(data:dict) -> bool:
     """
     read data from excel, format it in dictionary ports{}, call the processing function
     params:
@@ -51,7 +51,7 @@ def read(data:dict):
 
     return processing(ports,sheet,wb_list,data['excel_path'])
 
-def processing(cell_ports:dict,sheet,wb_list,file_path):
+def processing(cell_ports:dict,sheet,wb_list,file_path) -> bool:
     '''
     handles a to z columns in the excel file
     strings are included in port{} but not in get_unsec so neglected
@@ -93,11 +93,11 @@ def processing(cell_ports:dict,sheet,wb_list,file_path):
                     sheet[inserted_index].font = Font(color="FF0000")
                 wb_list.save(file_path)
     if unsec_flag == 0:
-        return 0
+        return False
     else:
-        return 1
+        return True
         
-def direct_chk(port):
+def direct_chk(port:str):
     # will be changed to handle named protocols
     chk = get_unsec()
     if port in chk:

@@ -25,8 +25,8 @@ while(True):
         data['fn_no'] = fn_no
         data['excel_path'] = excel_path
         data['first_index'] = first_index
-        unsec_findings = excel_auto(data)
-        if unsec_findings == 0:
+        unsec_findings = read(data)
+        if not unsec_findings :
             print("There isn't any unsecure ports in your file, go ahead!\n")
         else:
             print("Ops, I found some unsecure stuff, go check them\n")
