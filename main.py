@@ -48,13 +48,13 @@ while(True):
             src_ports_ls = input("input the src port(s)\n").split()
             src_app_group = port_obj( src_ports_ls,"source")
         else:
-            src_app_group = ["any"]
+            src_app_group = "any"
         dst_ports_chk = input("are destination ports specified? yes-->1 no-->0\n")
         if int(dst_ports_chk):
             dst_ports_ls = input("input the dst port(s)\n").split()
             dst_app_group = port_obj( dst_ports_ls,"destination")
         else:
-            dst_app_group = ["any"]
+            dst_app_group = "any"
         print("4-Finally we create the policy")
         create_policy(src_zone_adset, dst_zone_adset, src_app_group, dst_app_group)
     elif fn_no == 4:
