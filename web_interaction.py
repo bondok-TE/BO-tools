@@ -23,6 +23,7 @@ def web_interaction(ip_ls):
     driver.get("https://10.98.35.24:16311/ibm/console/logon.jsp")
 
     driver.implicitly_wait(10)
+    
     print("Authenticating...")
     username = driver.find_element(By.ID,'j_username')
     password = driver.find_element(By.ID,'j_password')

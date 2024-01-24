@@ -11,7 +11,7 @@ while(True):
     print("3 --> create srx new policy beginner mode")
     print("4 --> create srx new policy advanced mode")
     print("5 --> srx ntp integration")
-    print("6 --> srx pull OS")
+    print("6 --> srx test")
 
     fn_no = int(input())
     
@@ -87,6 +87,7 @@ while(True):
         if response != "":
             print("integration report is created check ./ntp_integrations.xlsx")
     elif fn_no == 6:
-        pass
-        
+        response = srx_interaction("10.8.0.14",fn_no)
+        print(response)
+
 
