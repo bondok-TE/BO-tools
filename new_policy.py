@@ -1,10 +1,12 @@
 from collections import OrderedDict
+from OneForAll import*
 
 def obj_ip(ip_ls ,direction):
 	ip_obj_dct = OrderedDict()
 	zone_st = set()
 	for ip in ip_ls:
-		print(f"get {direction}_interface of {ip}:\n>show route {ip}")
+		# print(f"get {direction}_interface of {ip}:\n>show route {ip}")
+		fw_interaction('juniper',[ip],f'show route {ip}')
 		interface = input(f"input the {direction}_interface of {ip}\n")
 		print(f"get the {direction}_zone:\n>show configuration | display set | match {interface}")
 		zone = input(f"input the {direction}_zone\n")
