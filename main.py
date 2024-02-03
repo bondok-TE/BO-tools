@@ -2,16 +2,18 @@ from automation import *
 from new_policy import *
 from ntp_integration import *
 from srx_interactions import *
+from oneforall_threads import *
 print('================ Welcome to BO_tools ================3')
 while(True):
     print('Pleased input the function number:')
     print("0 --> exit the program")
     print("1 --> xlsx unsecure ports check")
     print("2 --> shell unsecure ports check")
-    print("3 --> create srx new policy beginner mode")
-    print("4 --> create srx new policy advanced mode")
-    print("5 --> srx ntp integration")
-    print("6 --> srx test")
+    # print("3 --> create srx new policy beginner mode")
+    # print("4 --> create srx new policy advanced mode")
+    # print("5 --> srx ntp integration")
+    # print("6 --> srx test")
+    print("7 --> oneforall")
 
     fn_no = int(input())
     
@@ -89,5 +91,11 @@ while(True):
     elif fn_no == 6:
         response = srx_interaction("10.8.0.14",fn_no)
         print(response)
+    elif fn_no == 7:
+        device_type = input("please input the device type\n")
+        username = input("please input the login username\n")
+        password = getpass.getpass()
+        cmd = input("please input the desired command\n")
+        threads_interaction(device_type,username,password,cmd)
 
 

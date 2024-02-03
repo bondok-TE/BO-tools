@@ -2,7 +2,7 @@ from jnpr.junos import Device
 from jnpr.junos.exception import *
 import xml.etree.ElementTree as ET
 
-pass_path = "C:\\Users\\Ahmed.K.Gamal\\Desktop\\pass.txt"
+pass_path = "D:\\coding_files\\pass.txt"
 username = 'ahmed.k.gamal'
 
 with open(pass_path,'r') as file:
