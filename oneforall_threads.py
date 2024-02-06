@@ -14,7 +14,7 @@ def _file_content(device:str) -> list :
     called by _setup_device function to open a text file and return its content as string, the file should not contain any empty lines
     :devices: the device OS type the input is the same name used for this OS in netmiko and also the same as the file.txt naming 
               the file.txt should contain the ips of all devices of this OS
-    :return: list of strings og ips
+    :return: list of strings of ips
     """
     with open(f"D:\\coding_files\\one_for_all_{device}.txt")as file:
         return file.read().split("\n") 
@@ -40,7 +40,7 @@ def _setup_device (device_type:str,username:str,password:str) -> list:
     return devices_ls
 
 # direct communication with any fw
-# for sending config commands --> connection.send_config(list of strings)
+# for sending config commands --> connection.send_config_set(list of strings)
 def _fw_interaction(device:dict,command:str) -> str:
     """
     direct communication to any firewall using netmiko 
@@ -51,9 +51,14 @@ def _fw_interaction(device:dict,command:str) -> str:
     with Netmiko(**device) as connection:
         if device['device_type'] == 'paloalto_panos':
             response = connection.send_command(command,expect_string=r">")
+            return response
+        elif device['device_type'] == 'fortinet' :
+            config = ['config global', command]
+            response = connection.send_config_set(config)
+            return response
         else:
             response = connection.send_command(command)
-    return response
+            return response
 
 # threading
 def threads_interaction (device_type:str,username:str,password:str,cmd:str )-> None:
@@ -66,7 +71,7 @@ def threads_interaction (device_type:str,username:str,password:str,cmd:str )-> N
     with concurrent.futures.ThreadPoolExecutor() as exec:
         results = [exec.submit(_fw_interaction,device,cmd) for device in devices]
         for i in range(len(results)):
-            print(devices[i]['host'],results[i].result(),sep='\n=============================')
+            print(devices[i]['host'],results[i].result(),sep='\n=============================\n')
             print("=============================")
 
 

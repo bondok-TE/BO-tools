@@ -92,10 +92,15 @@ while(True):
         response = srx_interaction("10.8.0.14",fn_no)
         print(response)
     elif fn_no == 7:
-        device_type = input("please input the device type\n")
-        username = input("please input the login username\n")
+        print("""supported devices:\n==================
+cisco_asa --> asa_firewall
+fortinet --> fortinet devices
+juniper --> juniper devices
+paloalto_panos --> paloalto devices""")
+        device_type = input("please input the device type: ")
+        username = input("please input the login username: ")
         password = getpass.getpass()
-        cmd = input("please input the desired command\n")
+        cmd = input("please input the desired command: ")
         threads_interaction(device_type,username,password,cmd)
 
 
