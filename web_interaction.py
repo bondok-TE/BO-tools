@@ -32,7 +32,7 @@ def web_interaction(ip_ls):
 
     username.send_keys("ahmed.k.gamal")
 
-    with open('C:/Users/Ahmed.K.Gamal/Desktop/netcool.txt','r') as file:
+    with open('D:\\coding_files\\netcool.txt','r') as file:
         pswd = file.read()
 
 

@@ -60,20 +60,38 @@ def _fw_interaction(device:dict,command:str) -> str:
             response = connection.send_command(command)
             return response
 
+def _fw_interaction_batch(device:dict,command:list) -> str:
+    with Netmiko(**device) as connection:
+            if device['device_type'] == 'paloalto_panos':
+                response = connection.send_config_set(command,expect_string=r">")
+                return response
+            elif device['device_type'] == 'fortinet' :
+                response = connection.send_config_set(command)
+                return response
+            else:
+                response = connection.send_config_set(command)
+                return response    
+
 # threading
-def threads_interaction (device_type:str,username:str,password:str,cmd:str )-> None:
+def threads_interaction (device_type:str,username:str,password:str,cmd,mode:str )-> None:
     """
     call fw_interaction function through threads to boost the performance and handle the I/O waiting
     :device_type: OS type according to netmiko
-    :cmd: command to be sent to the firewall
+    :cmd: command to be sent to the firewall string or list of strings depending on the mode
+    :mode: "single" or "batch"
     """
     devices = _setup_device(device_type,username,password)
     with concurrent.futures.ThreadPoolExecutor() as exec:
-        results = [exec.submit(_fw_interaction,device,cmd) for device in devices]
-        for i in range(len(results)):
-            print(devices[i]['host'],results[i].result(),sep='\n=============================\n')
-            print("=============================")
-
+        if mode == "single":
+            results = [exec.submit(_fw_interaction,device,cmd) for device in devices]
+            for i in range(len(results)):
+                print(devices[i]['host'],results[i].result(),sep='\n=============================\n')
+                print("=============================")
+        elif mode == "batch":
+            results = [exec.submit(_fw_interaction_batch,device,cmd) for device in devices]
+            for i in range(len(results)):
+                print(devices[i]['host'],results[i].result(),sep='\n=============================\n')
+                print("=============================")
 
 
 
