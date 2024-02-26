@@ -3,7 +3,7 @@ from new_policy import *
 from ntp_integration import *
 from srx_interactions import *
 from oneforall_threads import *
-print('================ Welcome to BO_tools ================3')
+print('================ Welcome to BO_tools ================')
 while(True):
     print('Pleased input the function number:')
     print("0 --> exit the program")
@@ -100,23 +100,10 @@ paloalto_panos --> paloalto devices""")
         device_type = input("please input the device type: ")
         username = input("please input the login username: ")
         password = getpass.getpass()
-        mode = input("batch or single")
-        if mode == "single":
-            cmd = input("please input the desired command: ")
-            threads_interaction(device_type,username,password,cmd,mode)
-        else:
-            no_cmds = int(input("input the number of commands\n"))
-            cmd_ls = []
-            for i in range(no_cmds):
-                cmd_ls.append(input("input your cmd\n"))
-            threads_interaction(device_type,username,password,cmd_ls,mode)
-    elif fn_no == 8:
-        print("""supported devices:\n==================
-cisco_asa --> asa_firewall
-fortinet --> fortinet devices
-juniper --> juniper devices
-paloalto_panos --> paloalto devices""")
-        
-
+        cmd_no = int(input("please input number of commands\n"))
+        cmd_ls = []
+        for i in range(cmd_no):
+            cmd_ls.append(input("input your command\n"))
+        threads_interaction(device_type,username,password,cmd_ls)
 
 

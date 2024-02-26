@@ -1,6 +1,23 @@
 from netmiko import Netmiko
 import concurrent.futures
 import getpass
+# juniper
+# show system information | match hostname
+# show chassis routing-engine | match uptime
+# show chassis routing-engine | match Idle
+# show system alarms
+
+# forti
+# get system performance status | grep Uptime
+# get system performance status | grep CPU
+
+# paloalto
+# show system info | match hostname
+# show system info | match uptime
+# show system resources | match %Cpu
+# show system state | match alarm
+
+
 # import time 
 
 # start = time.perf_counter()
@@ -41,23 +58,27 @@ def _setup_device (device_type:str,username:str,password:str) -> list:
 
 # direct communication with any fw
 # for sending config commands --> connection.send_config_set(list of strings)
-def _fw_interaction(device:dict,command:str) -> str:
+def _fw_interaction(device:dict,command_ls:list) -> str:
     """
     direct communication to any firewall using netmiko 
     :device: one element of _setup_device output list
-    :command: command to be sent to the firewall
+    :command: list of commands to be sent to the firewall
     :return: the output of the sent command
     """
     with Netmiko(**device) as connection:
+        response = ""
         if device['device_type'] == 'paloalto_panos':
-            response = connection.send_command(command,expect_string=r">")
+            for command in command_ls:
+                response += connection.send_command(command,expect_string=r">")
             return response
         elif device['device_type'] == 'fortinet' :
-            config = ['config global', command]
-            response = connection.send_config_set(config)
+            config = ['config global'] + command_ls
+            for command in config:
+                response += connection.send_config_set(command)
             return response
         else:
-            response = connection.send_command(command)
+            for command in command_ls:
+                response += connection.send_command(command)
             return response
 
 def _fw_interaction_batch(device:dict,command:list) -> str:
@@ -73,25 +94,19 @@ def _fw_interaction_batch(device:dict,command:list) -> str:
                 return response    
 
 # threading
-def threads_interaction (device_type:str,username:str,password:str,cmd,mode:str )-> None:
+def threads_interaction (device_type:str,username:str,password:str,cmd_ls:list )-> None:
     """
     call fw_interaction function through threads to boost the performance and handle the I/O waiting
     :device_type: OS type according to netmiko
-    :cmd: command to be sent to the firewall string or list of strings depending on the mode
-    :mode: "single" or "batch"
+    :cmd: list of commands to be sent to the firewall
     """
     devices = _setup_device(device_type,username,password)
     with concurrent.futures.ThreadPoolExecutor() as exec:
-        if mode == "single":
-            results = [exec.submit(_fw_interaction,device,cmd) for device in devices]
-            for i in range(len(results)):
-                print(devices[i]['host'],results[i].result(),sep='\n=============================\n')
-                print("=============================")
-        elif mode == "batch":
-            results = [exec.submit(_fw_interaction_batch,device,cmd) for device in devices]
-            for i in range(len(results)):
-                print(devices[i]['host'],results[i].result(),sep='\n=============================\n')
-                print("=============================")
+        results = [exec.submit(_fw_interaction,device,cmd_ls) for device in devices]
+        for i in range(len(results)):
+            print(devices[i]['host'],results[i].result(),sep='\n=============================\n')
+            print("=============================")
+
 
 
 
